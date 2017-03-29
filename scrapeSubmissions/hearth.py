@@ -68,12 +68,18 @@ class hearth:
                 if problem_slug not in problems:
                     problems[problem_slug] = {}
                     problem_name = str(problem.text).strip(' \n \n ')
-                    lang = str(tds[5].text).strip(' \n \n ')
-                    submission_code = str(tds[6].find('a')['href']).split('/')[-2]
                     problems[problem_slug]['problem_link'] = problem_link
-                    problems[problem_slug]['submission_code'] = submission_code
+                    problems[problem_slug]['submissions'] = []
                     problems[problem_slug]['problem_name'] = problem_name
-                    problems[problem_slug]['lang'] = lang
+                submission_code = tds[6].find('a')['href']
+                if submission_code:
+                    lang = str(tds[5].text).strip(' \n \n ')
+                    submission_code= str(submission_code).split('/')[-2]
+                    submission = {}
+                    submission['lang'] = lang
+                    submission['code'] =submission_code
+                    problems[problem_slug]['submissions'].append(submission)
+
             page = parsed_reponse.find('span',{'class':'step-links'}).findAll('a')[-1]
             if page.has_attr('data-gotopage'):
                 repeat = True
@@ -86,5 +92,8 @@ class hearth:
         print(json.dumps(problems,indent=4))
 
 
-user = hearth('moghya','helpit70.')
-user.get_solutions()
+def test_hearth():
+    user = hearth('moghya','helpit70.')
+    user.get_solutions()
+
+test_hearth()
