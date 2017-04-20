@@ -1,0 +1,29 @@
+def test_upToGithub():
+	user = upToGithub('moghya','helpit70.')
+	user.createRepo()
+
+
+
+def test_hearth():
+    user = hearth('moghya','helpit70.')
+    user.get_solutions()
+
+def test_hello():
+	print('hello')
+
+
+
+	for li in parsed_response.find('div',{'id':'solutiondiv'}).find('ol').findAll('li'):
+                        print(li.text)
+                        submission['code']+= li.text.strip('\n') +'\n'
+
+                    print(submission['code'])
+                    f = open(submission['id']+'.txt','w')
+                    f.write(submission['code'])
+                    f.close()
+
+
+
+
+
+
