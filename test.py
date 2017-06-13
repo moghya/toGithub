@@ -22,6 +22,7 @@ def initialization():
 		print('Hello bud, It seems that you haven\'t configured userData.json file or there\'s some error. \n Please configure it and execute this later. Thanks.')
 		return None
 
+<<<<<<< HEAD
 def saveData(userData):
 	f = open('userData.json','w')
 	f.write(j.dumps(userData,indent=4))
@@ -43,6 +44,15 @@ def main():
 		print('Aborting....')
 		return
 
+=======
+def test_cchef():
+	user = cchef('cchefUsername','cchefPassword.')
+	user.getSubmissions()
+
+def test_upToGithub():
+	user = upToGithub('githubUsername','githubPassword')
+	user.cchefUpload('cchefUsername','cchefPassword.')
+>>>>>>> origin/master
 
 if __name__ == '__main__':
 	main()
