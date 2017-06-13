@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../npteldl/.idea/npteldl.iml" filepath="$PROJECT_DIR$/../npteldl/.idea/npteldl.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/toGithub.iml" filepath="$PROJECT_DIR$/.idea/toGithub.iml" />
     </modules>
   </component>

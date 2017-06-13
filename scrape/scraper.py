@@ -9,7 +9,7 @@ extensions = {
     'ASM':'',
     'BASH':'sh',
     'BF':'',
-    'C':'',
+    'C':'c',
     'C99 strict':'',
     'CAML':'',
     'CLOJ':'',
@@ -27,7 +27,7 @@ extensions = {
     'ICK':'',
     'ICON':'',
     'JAVA':'java',
-    'JS':'',
+    'JS':'js',
     'LISP clisp':'',
     'LISP sbcl':'',
     'LUA':'',
@@ -38,7 +38,7 @@ extensions = {
     'PAS gpc':'',
     'PERL':'',
     'PERL6':'',
-    'PHP':'pyp',
+    'PHP':'php',
     'PIKE':'',
     'PRLG':'',
     'PYPY':'',
@@ -52,9 +52,34 @@ extensions = {
     'ST':'',
     'TCL':'tcl',
     'TEXT':'',
-    'WSPC':''
-
-
+    'WSPC':'',
+    'C++11':'cpp',
+    'GNU C':'c',
+    'GNU C11':'c',
+    'GNU C++':'cpp',
+    'GNU C++11':'cpp',
+    'GNU C++14':'cpp',
+    'MS C++':'',
+    'MONO C#':'',
+    'MS C#':'',
+    'D':'',
+    'Go':'',
+    'Haskell':'',
+    'Java 8':'java',
+    'Kotlin':'',
+    'Ocaml':'',
+    'Delphi':'',
+    'FPC':'',
+    'Perl':'',
+    'PHP':'php',
+    'Python 2':'py',
+    'Python 3':'py',
+    'PyPy 2':'',
+    'PyPy 3':'',
+    'Ruby':'rb',
+    'Rust':'',
+    'Scala':'',
+    'JavaScript':'js'
 }
 
 
@@ -88,10 +113,9 @@ class cchef():
                     submission['id'] = tds[0].text
                     print('\t\t'+submission['id'])
                     submission['lang'] = tds[-2].text
+                    submission['ext'] = 'txt'
                     if submission['lang'] in extensions:
                         submission['ext'] = extensions[submission['lang']]
-                    else:
-                        submission['ext'] = 'txt'
                     submission['link'] = tds[-1].find('a')['href']
                     self.session.headers = {
                         'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -108,17 +132,13 @@ class cchef():
                     try:
                         for li in parsed_response.find('div',{'id':'solutiondiv'}).find('ol').findAll('li'):
                             submission['code']+= li.text.strip('\n') +'\n'
-                        #print(submission['code'])
                     except:
                         print('Except occurred')
                         pass
                     problem['submissions'].append(submission)
                 self.submissions[uid]=problem
 
-
-
 #step 2 lets create class to get solutions from hearth
-
 class hearth:
 
     def __init__(self,username,password):
@@ -220,5 +240,46 @@ class hrank:
         self.password = password
         self.accepted_solutions = []
 
+
     def get_solutions(self):
         session = requests.Session()
+
+
+#class for codeforces.com and it works in pretty good way.
+class cforce:
+
+    def __init__(self,username,password,offset):
+        self.username = username
+        self.password = password
+        self.session  = requests.Session()
+        self.accepted_solutions = []
+        self.offset = offset
+
+    def getSubmissions(self):
+        response = json.loads(self.session.get('http://codeforces.com/api/user.status?handle='+self.username+'&from=1').text)
+        print(response['status']+' now got codeforces submisions.')
+        data = {
+            'csrf_token':BeautifulSoup(self.session.get('http://codeforces.com/submissions/'+self.username).text,'lxml').find('meta',{'name':'X-Csrf-Token'})['content']
+        }
+        for result in response['result']:
+            if result['id']<=self.offset:
+                break
+            print(result['verdict'])
+            if result['verdict']=='OK':
+                submission = {}
+                submission['id'] = str(result['id'])
+                submission['lang'] = result['programmingLanguage']
+                submission['ext'] = 'txt'
+                if submission['lang'] in extensions:
+                    submission['ext']=extensions[submission['lang']]
+                else:
+                    print('Don\'t have Extension for '+submission['lang']+' using .txt')
+                submission['contestId'] = str(result['problem']['contestId'])
+                submission['problemName'] = result['problem']['index']
+                data['submissionId'] = submission['id']
+                submissionResponse = json.loads(self.session.post('http://codeforces.com/data/submitSource',data=data).text)
+                submission['code'] = submissionResponse['source']
+                print('scraped '+submission['contestId']+submission['problemName'])
+                self.accepted_solutions.append(submission)
+        if len(response['result'])>0:
+            self.offset = response['result'][0]['id']
