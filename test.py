@@ -2,8 +2,8 @@ import json as j
 from scrape.scraper import *
 from upload.uploader import *
 def test_upToGithub():
-	user = upToGithub('moghya','helpit70.')
-	user.cforceUpload('sawant','helpit70.')
+	user = upToGithub('githubusername','githubpassword.')
+	user.cforceUpload('cforceusername','cforcepassword')
 
 def initialization():
 	try:
